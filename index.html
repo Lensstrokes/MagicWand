@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>A Little Magic For You 🪄</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Quicksand:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    height: 100%;
+    background: linear-gradient(160deg, #2b1030 0%, #4a1942 35%, #6e2555 65%, #8a3a63 100%);
+    font-family: 'Quicksand', sans-serif;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* ═══════════════════════════════════════
+     MAGIC SPARKLE BACKGROUND
+  ═══════════════════════════════════════ */
+  #magic-bg {
+    position: fixed; inset: 0; z-index: 0;
+    overflow: hidden;
+  }
+  .bg-sparkle {
+    position: absolute;
+    color: #ffd9ec;
+    opacity: 0;
+    animation: twinkleFloat linear infinite;
+    pointer-events: none;
+  }
+  @keyframes twinkleFloat {
+    0%   { opacity: 0; transform: translateY(0) scale(0.5) rotate(0deg); }
+    10%  { opacity: 1; }
+    85%  { opacity: 0.9; }
+    100% { opacity: 0; transform: translateY(-110vh) scale(1.1) rotate(200deg); }
+  }
+
+  /* soft glow orbs drifting in background */
+  .bg-orb {
+    position: absolute; border-radius: 50%;
+    filter: blur(2px);
+    background: radial-gradient(circle, rgba(255,182,217,0.5), transparent 70%);
+    animation: orbDrift 8s ease-in-out infinite;
+  }
+  @keyframes orbDrift {
+    0%, 100% { transform: translate(0,0) scale(1); }
+    50% { transform: translate(20px,-30px) scale(1.15); }
+  }
+
+  /* ═══════════════════════════════════════
+     INTRO POPUP
+  ═══════════════════════════════════════ */
+  #intro-popup {
+    position: fixed; inset: 0; z-index: 50;
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+    background: rgba(20,5,25,0.4);
+    transition: opacity 0.5s ease, visibility 0.5s;
+  }
+  #intro-popup.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+  .popup-card {
+    background: linear-gradient(160deg, #fff5fa, #ffe6f0);
+    border-radius: 28px;
+    padding: 2.4rem 2rem;
+    max-width: 340px; width: 100%;
+    text-align: center;
+    box-shadow: 0 25px 80px rgba(0,0,0,0.45), 0 0 40px rgba(255,150,200,0.25);
+    animation: popIn 0.6s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  @keyframes popIn { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+  .popup-emoji { font-size: 3rem; margin-bottom: 0.8rem; animation: wobble 2s ease-in-out infinite; }
+  @keyframes wobble { 0%,100% { transform: rotate(-6deg); } 50% { transform: rotate(6deg); } }
+
+  .popup-card h2 {
+    font-family: 'Playfair Display', serif; font-style: italic;
+    font-size: 1.5rem; color: #7a2a52; margin-bottom: 0.5rem; line-height: 1.4;
+  }
+  .popup-card p {
+    color: #a5527a; font-size: 0.9rem; margin-bottom: 1.6rem; opacity: 0.85;
+  }
+  .popup-card button {
+    padding: 13px 32px; border: none; border-radius: 50px;
+    font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: 0.95rem;
+    background: linear-gradient(135deg, #d94f8c, #f288b5);
+    color: white; cursor: pointer; letter-spacing: 0.03em;
+    box-shadow: 0 6px 22px rgba(217,79,140,0.4);
+    transition: transform 0.15s ease;
+  }
+  .popup-card button:active { transform: scale(0.95); }
+
+  /* ═══════════════════════════════════════
+     WAND SCENE
+  ═══════════════════════════════════════ */
+  #wand-scene {
+    position: fixed; inset: 0; z-index: 5;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center; padding: 2rem;
+  }
+
+  .wand-wrap {
+    position: relative;
+    width: 160px; height: 160px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 2.2rem;
+  }
+  .wand-glow {
+    position: absolute; inset: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,196,226,0.55), transparent 70%);
+    animation: glowPulse 2.6s ease-in-out infinite;
+  }
+  @keyframes glowPulse { 0%,100% { transform: scale(1); opacity: 0.7; } 50% { transform: scale(1.25); opacity: 1; } }
+
+  .wand {
+    position: relative; z-index: 2;
+    font-size: 5rem;
+    filter: drop-shadow(0 6px 18px rgba(0,0,0,0.4));
+    animation: wandIdle 3s ease-in-out infinite;
+    transform-origin: 70% 70%;
+  }
+  @keyframes wandIdle { 0%,100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
+
+  .wand.casting {
+    animation: wandCast 0.9s cubic-bezier(0.36,0.07,0.19,0.97);
+  }
+  @keyframes wandCast {
+    0%   { transform: rotate(-5deg) scale(1); }
+    20%  { transform: rotate(-35deg) scale(1.1); }
+    40%  { transform: rotate(25deg) scale(1.15); }
+    60%  { transform: rotate(-15deg) scale(1.1); }
+    80%  { transform: rotate(10deg) scale(1.05); }
+    100% { transform: rotate(-5deg) scale(1); }
+  }
+
+  #spell-btn {
+    padding: 15px 40px; border: none; border-radius: 50px;
+    font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: 1.05rem;
+    background: linear-gradient(135deg, #d94f8c, #f288b5);
+    color: white; cursor: pointer; letter-spacing: 0.04em;
+    box-shadow: 0 8px 30px rgba(217,79,140,0.45);
+    transition: transform 0.15s ease;
+  }
+  #spell-btn:active { transform: scale(0.95); }
+
+  #spell-text {
+    margin-top: 2.2rem;
+    font-family: 'Playfair Display', serif; font-style: italic;
+    font-size: 1.6rem; color: #ffe0ef;
+    text-shadow: 0 2px 20px rgba(217,79,140,0.6);
+    opacity: 0; transform: translateY(14px) scale(0.9);
+    transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.34,1.56,0.64,1);
+    max-width: 340px; line-height: 1.6;
+  }
+  #spell-text.show { opacity: 1; transform: translateY(0) scale(1); }
+  #spell-text .small-note {
+    display: block; font-family: 'Quicksand', sans-serif; font-style: normal;
+    font-size: 0.9rem; color: #ffc3de; margin-top: 0.9rem; opacity: 0.85;
+  }
+
+  /* sparkle burst particles on spell cast */
+  .burst-particle {
+    position: fixed; z-index: 20; pointer-events: none;
+    font-size: 1.4rem; opacity: 1;
+    animation: burstFly 1s ease-out forwards;
+  }
+  @keyframes burstFly {
+    0%   { transform: translate(0,0) scale(0.6) rotate(0deg); opacity: 1; }
+    100% { transform: var(--burst-end) scale(1.1) rotate(180deg); opacity: 0; }
+  }
+
+  /* ═══════════════════════════════════════
+     RESTART BUTTON
+  ═══════════════════════════════════════ */
+  #restart-btn {
+    position: fixed; top: 20px; right: 20px; z-index: 60;
+    width: 44px; height: 44px; border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.35);
+    color: #ffe0ef; font-size: 1.25rem;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; -webkit-tap-highlight-color: transparent;
+    transition: transform 0.4s ease, background 0.2s ease;
+  }
+  #restart-btn:active { background: rgba(255,255,255,0.3); }
+  #restart-btn.spin { animation: restartSpin 0.6s ease; }
+  @keyframes restartSpin { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
+</style>
+</head>
+<body>
+
+<div id="magic-bg"></div>
+
+<button id="restart-btn" onclick="restartSpell()" aria-label="Do spell again">↻</button>
+
+<div id="intro-popup">
+  <div class="popup-card">
+    <div class="popup-emoji">🤧✨</div>
+    <h2> Let's chu mantar<br>your fever!</h2>
+    <p> A special magic, just for you  - by tanmay</p>
+    <button onclick="closeIntro()">Enter Spell room ✨</button>
+  </div>
+</div>
+
+<div id="wand-scene">
+  <div class="wand-wrap">
+    <div class="wand-glow"></div>
+    <div class="wand" id="wand">🪄</div>
+  </div>
+  <button id="spell-btn" onclick="castSpell()">✨ Cast the Spell</button>
+  <div id="spell-text">
+    Abra ka daabra... gili gili chu! 🪄✨
+    <span class="small-note">yeaaaaa your fever is officially banished 💕 get well soon ji 🥰🥹 
+    </span>
+  </div>
+</div>
+
+<script>
+  // ── Background sparkles ──
+  function spawnSparkles() {
+    const bg = document.getElementById('magic-bg');
+    const symbols = ['✨','⭐','💫','🌟'];
+    for (let i = 0; i < 35; i++) {
+      const s = document.createElement('div');
+      s.className = 'bg-sparkle';
+      s.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+      s.style.left = Math.random() * 100 + 'vw';
+      s.style.top = Math.random() * 100 + 'vh';
+      s.style.fontSize = (0.8 + Math.random() * 1.4) + 'rem';
+      s.style.animationDuration = (6 + Math.random() * 8) + 's';
+      s.style.animationDelay = (Math.random() * 8) + 's';
+      bg.appendChild(s);
+    }
+    // a few soft glow orbs
+    for (let i = 0; i < 5; i++) {
+      const o = document.createElement('div');
+      o.className = 'bg-orb';
+      const size = 80 + Math.random() * 140;
+      o.style.width = size + 'px';
+      o.style.height = size + 'px';
+      o.style.left = Math.random() * 90 + 'vw';
+      o.style.top = Math.random() * 90 + 'vh';
+      o.style.animationDuration = (6 + Math.random() * 6) + 's';
+      bg.appendChild(o);
+    }
+  }
+  spawnSparkles();
+
+  function closeIntro() {
+    document.getElementById('intro-popup').classList.add('hidden');
+  }
+
+  function castSpell() {
+    const wand = document.getElementById('wand');
+    const spellText = document.getElementById('spell-text');
+
+    wand.classList.remove('casting');
+    void wand.offsetWidth; // restart animation
+    wand.classList.add('casting');
+
+    burstSparkles();
+
+    setTimeout(() => {
+      spellText.classList.add('show');
+    }, 500);
+  }
+
+  function restartSpell() {
+    const wand = document.getElementById('wand');
+    const spellText = document.getElementById('spell-text');
+    const restartBtn = document.getElementById('restart-btn');
+
+    spellText.classList.remove('show');
+    wand.classList.remove('casting');
+
+    restartBtn.classList.remove('spin');
+    void restartBtn.offsetWidth; // restart animation
+    restartBtn.classList.add('spin');
+  }
+
+  function burstSparkles() {
+    const wandRect = document.getElementById('wand').getBoundingClientRect();
+    const cx = wandRect.left + wandRect.width / 2;
+    const cy = wandRect.top + wandRect.height / 2;
+    const symbols = ['✨','⭐','💫','🌟','💕'];
+
+    for (let i = 0; i < 22; i++) {
+      const p = document.createElement('div');
+      p.className = 'burst-particle';
+      p.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+      p.style.left = cx + 'px';
+      p.style.top = cy + 'px';
+      const angle = Math.random() * Math.PI * 2;
+      const dist = 100 + Math.random() * 160;
+      const ex = Math.cos(angle) * dist;
+      const ey = Math.sin(angle) * dist;
+      p.style.setProperty('--burst-end', `translate(${ex}px, ${ey}px)`);
+      p.style.animationDelay = (Math.random() * 0.15) + 's';
+      document.body.appendChild(p);
+      setTimeout(() => p.remove(), 1300);
+    }
+  }
+</script>
+</body>
+</html>
